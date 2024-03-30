@@ -1,20 +1,16 @@
 import axios from "axios";
 import Product from "../models/product";
 import joi from "joi";
+import Category from "../models/category";
 
 const productSchema = joi.object({
     name: joi.string().required(),
     price: joi.number().required(),
-})
+    categoryId: joi.string().required(),
+});
 
 export const getAll = async (req, res) => {
     try {
-        const { error } = productSchema.validate(req.body);
-        if (error) {
-            res.json({
-                message: error.details[0].message,
-            });
-        }
         const data = await Product.find();
         if (data.length === 0) {
             return res.status(200).json({
@@ -24,7 +20,7 @@ export const getAll = async (req, res) => {
         return res.json(data)
     } catch (error) {
         return res.status(400).json({
-            message: error,
+            message: error.message,
         });
     }
 };
@@ -40,12 +36,13 @@ export const get = async (req, res) => {
         return res.json(data);
     } catch (error) {
         return res.status(400).json({
-            message: error,
+            message: error.message,
         });
     }
 }
 
 export const create = async (req, res) => {
+    console.log("req.user", req.user);
     try {
         const data = await Product.create(req.body);
         if (data.length === 0) {
@@ -56,7 +53,7 @@ export const create = async (req, res) => {
         return res.json(data);
     } catch (error) {
         return res.status(400).json({
-            message: error,
+            message: error.message,
         });
     }
 }
@@ -74,7 +71,7 @@ export const update = async (req, res) => {
         return res.json(data);
     } catch (error) {
         return res.status(400).json({
-            message: error,
+            message: error.message,
         });
     }
 }
@@ -84,13 +81,14 @@ export const remove = async (req, res) => {
         const data = await Product.findOneAndDelete({ _id: req.params.id });
         if (data.length === 0) {
             return res.status(200).json({
-                message: "Xoá sản phẩm  ko thành công",
-            })
+                message: "Xoá sản phẩm thành công",
+                data,
+            });
         }
         return res.json(data);
     } catch (error) {
         return res.status(400).json({
-            message: error,
+            message: error.message,
         });
     }
-}
+};

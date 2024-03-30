@@ -41,17 +41,22 @@
 // });
 import express from "express";
 import productRouter from "./routes/product"
+import categoryRouter from "./routes/category"
 import mongoose from "mongoose";
+import authRouter from "./routes/auth";
+import cors from "cors";
 
 //khởi tạo
 const app = express();
 
 // chuyển đỔi dữ liệu
 app.use(express.json());
+app.use(cors());
 
 app.use("/api", productRouter);
+app.use("/api", categoryRouter);
 
-
-mongoose.connect("mongodb://localhost:27017/demo-nodejs");
+app.use("/api", authRouter);
+mongoose.connect("mongodb://127.0.0.1/demo-nodejs");
 
 export const viteNodeApp = app;
